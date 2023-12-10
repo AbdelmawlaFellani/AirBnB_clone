@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """This module defines the FileStorage class"""
 
-import json
 import os
+import json
 
 
 class FileStorage:
@@ -19,14 +19,15 @@ class FileStorage:
 
     def new(self, obj):
         """Sets in __objects the obj with key <obj class name>.id"""
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        return FileStorage.__objects[key] = obj
+        key = f"{obj.__class__.__name__}.{obj.id}"
+        FileStorage.__objects[key] = obj
 
     def save(self):
         """Serializes __objects to the JSON file (path: __file_path)"""
-        objs = {key: obj.to_dict() for key, obj in self.__objects.items()}
-        with open(self.__file_path, 'w') as file:
-            json.dump(objs, file)
+        obj_dict = {key: value.to_dict()
+                for key, value in FileStorage.__objects.items()}
+        with open(FileStorage.__file_path, 'w') as f:
+            json.dump(obj_dict, f)
 
     def reload(self):
         """Deserializes the JSON file to __objects (if the file exists)"""
@@ -43,18 +44,18 @@ class FileStorage:
                 from models.place import Place
                 from models.review import Review
                 classes = {
-                    'BaseModel': BaseModel,
-                    'User': User,
-                    'State': State,
-                    'City': City,
-                    'Amenity': Amenity,
-                    'Place': Place,
-                    'Review': Review
-                }
+                        'BaseModel': BaseModel,
+                        'User': User,
+                        'State': State,
+                        'City': City,
+                        'Amenity': Amenity,
+                        'Place': Place,
+                        'Review': Review
+                        }
                 for key, value in obj_dict.items():
                     class_name, obj_id = key.split('.')
                     cls = classes[class_name]
                     new_obj = cls(**value)
                     self.new(new_obj)
-            except FileNotFoundError:
-                pass
+        except FileNotFoundError:
+            pass

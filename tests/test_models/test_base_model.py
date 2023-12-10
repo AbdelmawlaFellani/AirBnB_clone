@@ -10,4 +10,3 @@ import pycodestyle
 
 class TestBaseModel(unittest.TestCase):
     """Test cases for the BaseModel class"""
-
