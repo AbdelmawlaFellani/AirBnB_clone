@@ -57,3 +57,27 @@ class TestBaseModel(unittest.TestCase):
         expected_output = "[BaseModel] ({}) {}"\
             .format(my_model.id, my_model.__dict__)
         self.assertEqual(str(my_model), expected_output)
+
+    def test_save_updates_updated_at(self):
+        """Test that the save method updates the updated_at attribute"""
+        my_model = BaseModel()
+        old_updated_at = my_model.updated_at
+        sleep(0.1)
+        my_model.save()
+        new_updated_at = my_model.updated_at
+        self.assertNotEqual(old_updated_at, new_updated_at)
+
+    def test_to_dict_contains_correct_keys(self):
+        """Self explain"""
+        my_model = BaseModel()
+        my_dict = my_model.to_dict()
+        self.assertIn("id", my_dict)
+        self.assertIn("created_at", my_dict)
+        self.assertIn("updated_at", my_dict)
+        self.assertIn("__class__", my_dict)
+
+    def test_to_dict_contains_correct_values(self):
+        """Self explain"""
+        my_model = BaseModel()
+        my_dict = my_model.to_dict()
+        self.assertEqual(my_dict["id"], my_model.id)
